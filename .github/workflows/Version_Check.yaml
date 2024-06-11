@@ -51,11 +51,12 @@ jobs:
           git config --global user.email 'bhvaid21@gmail.com'
           git add input.yaml
           git commit -m 'Update input.yaml with new release information'
-          git push
+          git push origin ${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-         github_token: ${{ secrets.PAT }}
+
+ #     - name: Push changes
+ #       uses: ad-m/github-push-action@master
+ #       with:
+ #        github_token: ${{ secrets.PAT }}
