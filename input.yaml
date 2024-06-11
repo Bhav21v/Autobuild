@@ -2,7 +2,7 @@ rbase:
   Baselayername: rdepth
   Baselayertag: 2023q09
   Build_layer_name: rbase
-  Build_layer_tag: r-dev
+  Build_layer_tag: r-4.4.0v0-dev
   Dockerfile: default
   Env:
     R: 4.4.0
