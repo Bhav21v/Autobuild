@@ -5,7 +5,7 @@ rbase:
   Build_layer_tag: r-4.4.0v0-dev
   Dockerfile: default
   Env:
-    R: 
+    R: 4.4.0
   build-required: false
 rdepth:
   Baselayername: ros
