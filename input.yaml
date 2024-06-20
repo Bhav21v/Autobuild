@@ -1,12 +1,3 @@
-rbase:
-  Baselayername: rdepth
-  Baselayertag: 2023q09
-  Build_layer_name: rbase
-  Build_layer_tag: r-4.4.1v0-dev
-  Dockerfile: default
-  Env:
-    R: 4.4.1
-  build-required: true
 rdepth:
   Baselayername: ros
   Baselayertag: 20230821
