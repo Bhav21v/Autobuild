@@ -1,5 +1,22 @@
 import requests
 import yaml
+import os
+
+input_file_path = 'input.yaml'
+template_file_path = 'template.yaml'
+
+if os.path.exists(input_file_path):
+    with open(input_file_path, 'r') as file:
+        yaml_data = yaml.safe_load(file)
+else:
+    yaml_data = {}
+
+if 'rbase' not in yaml_data:
+    if os.path.exists(template_file_path):
+        with open(template_file_path, 'r') as file:
+            template_data = yaml.safe_load(file)
+            if 'rbase' in template_data:
+                yaml_data['rbase'] = template_data['rbase']
 
 # Function to parse DCF content
 def parse_dcf(content):
@@ -33,12 +50,9 @@ def update_new_value(data, keys, value):
     if len(keys) == 1:
         data[keys[0]] = value
     else:
+        if keys[0] not in data:
+            data[keys[0]] = {}
         update_new_value(data[keys[0]], keys[1:], value)
-
-# Load input file
-input_file_path = 'input.yaml'
-with open(input_file_path, 'r') as file:
-    yaml_data = yaml.safe_load(file)
         
 update_new_value(yaml_data, ['rbase', 'Env', 'R'], release_value)  
 update_new_value(yaml_data, ['rbase', 'Build_layer_tag'], "r-"+ release_value +"v0-dev")  
