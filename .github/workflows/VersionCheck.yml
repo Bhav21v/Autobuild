@@ -75,13 +75,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Example Step Using Variable
-        run: echo "The variable value is ${{ vars.BUILD_LAYER_TAG }}"
-
       - name: Build and push Docker image
         env:
           RELEASE_VALUE: ${{ needs.check-release.outputs.release_value }}
-          BUILD_LAYER_TAG: ${{ vars.BUILD_LAYER_TAG }} 
         run: |
           cat Dockerfile
           sed -i -e "s|ARG R_VERSION=.*|ARG R_VERSION=${RELEASE_VALUE}|" Dockerfile
