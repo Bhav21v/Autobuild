@@ -3,7 +3,7 @@ name: Checks for the new release and proceed accordingly
 on:
   workflow_dispatch:
   schedule:
-    - cron: '07 20 24 7 *' 
+    - cron: '00 20 26 7 *' 
 
 jobs:
   check-release:
