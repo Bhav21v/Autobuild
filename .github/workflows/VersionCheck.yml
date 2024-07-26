@@ -1,0 +1,113 @@
+name: Checks for the new release and proceed accordingly
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '07 20 24 7 *' 
+
+jobs:
+  check-release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_value: ${{ steps.get_release.outputs.release_value }}
+      match: ${{ steps.compare_versions.outputs.match }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch release version from website
+        id: get_release
+        run: |
+          EXTRACTED_VALUE=$(python Version_Check.py | grep '^value=' | cut -d'=' -f2)  # Release value extracted from website
+          echo "release_value=${EXTRACTED_VALUE}" >> $GITHUB_ENV
+          echo "release_value=${EXTRACTED_VALUE}" >> $GITHUB_OUTPUT
+          echo "Release value: ${EXTRACTED_VALUE}"  
+
+      # Current version stored in RELEASE_VERSION variable 
+      - name: Get stored release version
+        run: echo "RELEASE_VERSION=${{ vars.RELEASE_VERSION }}" >> $GITHUB_ENV
+
+     # Comparing stored version with the extracted version.
+      - name: Compare versions
+        id: compare_versions
+        run: |
+          if [ "${{ env.release_value }}" = "${{ vars.RELEASE_VERSION }}" ]; then
+            echo "match=true" >> $GITHUB_OUTPUT
+            echo "No version change detected."
+          else
+            echo "match=false" >> $GITHUB_OUTPUT
+            echo "There is a version change, building Dockerfile"
+          fi
+
+  build-docker:
+    if: needs.check-release.outputs.match == 'false'
+    runs-on: ubuntu-latest
+    needs: check-release
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Printing version value extracted from the website for verification.
+      - name: Print release value
+        run: echo "The release value is ${{ needs.check-release.outputs.release_value }}"
+
+      - name: Set up environment variables
+        run: |
+          echo "SUBSCRIPTION_USERNAME=${{ secrets.SUBSCRIPTION_USERNAME }}" >> $GITHUB_ENV
+          echo "SUBSCRIPTION_PASSWORD=${{ secrets.SUBSCRIPTION_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Replace placeholders in Dockerfile
+        run: |
+          sed -i 's/{{SUBSCRIPTION_USERNAME}}/${{ env.SUBSCRIPTION_USERNAME }}/g' Dockerfile
+          sed -i 's/{{SUBSCRIPTION_PASSWORD}}/${{ env.SUBSCRIPTION_PASSWORD }}/g' Dockerfile
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Example Step Using Variable
+        run: echo "The variable value is ${{ vars.BUILD_LAYER_TAG }}"
+
+      - name: Build and push Docker image
+        env:
+          RELEASE_VALUE: ${{ needs.check-release.outputs.release_value }}
+          BUILD_LAYER_TAG: ${{ vars.BUILD_LAYER_TAG }} 
+        run: |
+          cat Dockerfile
+          sed -i -e "s|ARG R_VERSION=.*|ARG R_VERSION=${RELEASE_VALUE}|" Dockerfile
+          echo "After modifications - "
+          cat Dockerfile
+
+          dockerfile=Dockerfile
+          image_tag="r-${RELEASE_VALUE}v0"
+          docker build -f $dockerfile -t docker.io/bvdoc/${image_tag}:${image_tag} .
+          docker push docker.io/bvdoc/${image_tag}:${image_tag}
+
+  update-variable:
+    needs: [check-release, build-docker]
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+
+      - name: Call API to update variable
+        env:
+          PAT: ${{ secrets.PAT }}
+          NEW_RELEASE_VERSION: ${{ needs.check-release.outputs.release_value }}
+        run: |
+          echo "New_Version is:${{ needs.check-release.outputs.release_value }}"
+          curl -X PATCH \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/variables/RELEASE_VERSION \
+            -d '{"name":"RELEASE_VERSION","value":"'"$NEW_RELEASE_VERSION"'"}'
