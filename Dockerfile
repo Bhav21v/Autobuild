@@ -15,5 +15,6 @@ RUN echo "Installing R Base..." && \
     dnf clean all && \
     rm -rf R-${R_VERSION}-1-1.x86_64.rpm 
 
-RUN Rscript -e "install.packages('abind', repos='https://rspm-dev.pfizer.com:8080/swb_r441/latest', type='source')"
-
+RUN  R CMD javareconf \
+&& Rscript -e "install.packages('abind', repos='https://rspm-dev.pfizer.com:8080/swb_r441/latest', type='source')"
+ 
