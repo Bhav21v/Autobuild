@@ -1,0 +1,5 @@
+CXX14 = g++ -std=c++1y -O3 -Wno-unused-variable -Wno-unused-function -Wno-builtin-macro-redefined -fPIC
+CFLAGS=-O3 -march=core-avx-i -Wno-unused-variable -Wno-unused-function -Wno-builtin-macro-redefined
+CXXFLAGS=-O3 -march=core-avx-i -Wno-unused-variable -Wno-unused-function -Wno-builtin-macro-redefined
+CXX14FLAGS=-O3 -march=core-avx-i -Wno-unused-variable -Wno-unused-function -Wno-builtin-macro-redefined
+CXX14FLAGS += -DBOOST_MPL_CFG_NO_PREPROCESSED_HEADERS -DBOOST_MPL_LIMIT_LIST_SI
