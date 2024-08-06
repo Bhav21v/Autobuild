@@ -19,7 +19,7 @@ RUN echo "Installing R Base..." && \
     ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R-${R_VERSION}
 
 #Copy Makevars and Renviron
-COPY build_files/RFiles/* /opt/R/${R_VERSION}/lib/R/etc/
+COPY build_files/Rfiles/* /opt/R/${R_VERSION}/lib/R/etc/
 
 #Copy script to generate aws credentials
 COPY build_files/get-aws-temp-cred-R.py /app/
