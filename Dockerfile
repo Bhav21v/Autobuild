@@ -1,4 +1,4 @@
-FROM https://artifactory.pfizer.com/artifactory/atpcont/rdep/r-4.4.1v0-dev/
+FROM redhat/ubi9:latest
 
 ARG R_VERSION=
 
@@ -18,6 +18,11 @@ RUN echo "Installing R Base..." && \
     ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript && \
     ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R-${R_VERSION}
 
+COPY build_files/Rfonts /usr/share/fonts/Rfonts
+COPY build_files/ca-certs/* /etc/pki/ca-trust/source/anchors/
+
+RUN update-ca-trust && \
+    fc-cache -f -v 
 #Copy Makevars and Renviron
 COPY build_files/Rfiles/* /opt/R/${R_VERSION}/lib/R/etc/
 
@@ -33,4 +38,5 @@ ENV DISPLAY=10
 ENV NOAWT=1
 # setting up the environment variable so that all users can access this makevars file
 ENV R_MAKEVARS_SITE=/opt/R/${R_VERSION}/lib/R/etc/Makevars
- 
+ENV JAVA_HOME=/usr/lib/jvm/jre-11-openjdk/
+
