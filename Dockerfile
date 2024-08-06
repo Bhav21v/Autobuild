@@ -31,7 +31,7 @@ COPY build_files/get-aws-temp-cred-R.py /app/
 
 #configure Java for R and Installing tinytex
 
-RUN Rscript -e "install.packages("abind", repos= "https://cloud.r-project.org/")"
+RUN Rscript -e "install.packages("abind", repos= "https://cloud.r-project.org")"
 
 ENV PATH=/opt/tinytex/bin/x86_64-linux/:$PATH
 ENV DISPLAY=10
