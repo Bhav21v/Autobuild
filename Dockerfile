@@ -14,7 +14,6 @@ RUN echo "Installing R Base..." && \
     dnf install -y R-${R_VERSION}-1-1.x86_64.rpm && \
     dnf clean all && \
     rm -rf R-${R_VERSION}-1-1.x86_64.rpm &&\
-    mkdir /opt && \
     ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
     ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript && \
     ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R-${R_VERSION}
