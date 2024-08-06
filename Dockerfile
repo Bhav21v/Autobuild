@@ -1,4 +1,4 @@
-FROM artifactory.pfizer.com/atpcont/rdep:r-4.4.1v0-dev
+FROM redhat/ubi9:latest
 
 ARG R_VERSION=
 
