@@ -1,4 +1,4 @@
-FROM https://artifactory.pfizer.com/artifactory/atpcont/rdep/r-4.4.1v0-dev/
+FROM https://artifactory.pfizer.com/artifactory/atpcont/rdep/r-4.4.1v0-dev
 
 ARG R_VERSION=
 
