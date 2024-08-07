@@ -1,4 +1,4 @@
-FROM redhat/ubi9:latest
+FROM artifactory.pfizer.com/atpcont/rdep:r-4.4.1v0-dev
 
 ARG R_VERSION=
 
@@ -31,9 +31,9 @@ COPY build_files/get-aws-temp-cred-R.py /app/
 
 #configure Java for R and Installing tinytex
 
-RUN Rscript -e "install.packages('abind', repos= 'https://packagemanager.posit.co/cran/latest', type='source')"
-RUN Rscript -e "install.packages('tidyverse', repos= 'https://packagemanager.posit.co/cran/latest', type='source')"
-RUN Rscript -e "install.packages('rsconnect', repos= 'https://packagemanager.posit.co/cran/latest', type='source')"
+RUN Rscript -e "install.packages('abind', repos= 'repos='https://rspm-dev.pfizer.com:8080/swb_r441/latest', type='source')"
+RUN Rscript -e "install.packages('tidyverse', repos= 'repos='https://rspm-dev.pfizer.com:8080/swb_r441/latest', type='source')"
+RUN Rscript -e "install.packages('rsconnect', repos= 'repos='https://rspm-dev.pfizer.com:8080/swb_r441/latest', type='source')"
 
 
 ENV PATH=/opt/tinytex/bin/x86_64-linux/:$PATH
