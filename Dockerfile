@@ -31,9 +31,9 @@ COPY build_files/get-aws-temp-cred-R.py /app/
 
 #configure Java for R and Installing tinytex
 
-RUN Rscript -e "install.packages('abind', repos= 'https://cloud.r-project.org', type='source')"
-RUN Rscript -e "install.packages('tidyverse', repos= 'https://cloud.r-project.org', type='source')"
-RUN Rscript -e "install.packages('rsconnect', repos= 'https://cloud.r-project.org', type='source')"
+RUN Rscript -e "install.packages('abind', repos= 'https://packagemanager.posit.co/cran/latest', type='source')"
+RUN Rscript -e "install.packages('tidyverse', repos= 'https://packagemanager.posit.co/cran/latest', type='source')"
+RUN Rscript -e "install.packages('rsconnect', repos= 'https://packagemanager.posit.co/cran/latest', type='source')"
 
 
 ENV PATH=/opt/tinytex/bin/x86_64-linux/:$PATH
